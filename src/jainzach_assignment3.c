@@ -20,7 +20,8 @@
  *
  * This contains the main function. Add further description here....
  */
-
+#include "../include/global.h"
+#include "../include/connection_manager.h"
 /**
  * main function
  *
@@ -31,6 +32,7 @@
 int main(int argc, char **argv)
 {
 	/*Start Here*/
-
+    sscanf(argv[1], "%" SCNu16, &CONTROL_PORT);
+    init();
 	return 0;
 }
