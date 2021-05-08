@@ -41,24 +41,16 @@ char* create_response_header(int sock_index, uint8_t control_code, uint8_t respo
     getpeername(sock_index, (struct sockaddr *)&addr, &addr_size);
 
 #ifdef PACKET_USING_STRUCT
-    /* Controller IP Address */
         memcpy(&(cntrl_resp_header->controller_ip_addr), &(addr.sin_addr), sizeof(struct in_addr));
-        /* Control Code */
         cntrl_resp_header->control_code = control_code;
-        /* Response Code */
         cntrl_resp_header->response_code = response_code;
-        /* Payload Length */
         cntrl_resp_header->payload_len = htons(payload_len);
 #endif
 
 #ifndef PACKET_USING_STRUCT
-    /* Controller IP Address */
     memcpy(cntrl_resp_header, &(addr.sin_addr), sizeof(struct in_addr));
-    /* Control Code */
     memcpy(cntrl_resp_header+CNTRL_RESP_CONTROL_CODE_OFFSET, &control_code, sizeof(control_code));
-    /* Response Code */
     memcpy(cntrl_resp_header+CNTRL_RESP_RESPONSE_CODE_OFFSET, &response_code, sizeof(response_code));
-    /* Payload Length */
     payload_len = htons(payload_len);
     memcpy(cntrl_resp_header+CNTRL_RESP_PAYLOAD_LEN_OFFSET, &payload_len, sizeof(payload_len));
 #endif

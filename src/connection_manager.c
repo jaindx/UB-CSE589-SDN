@@ -138,12 +138,9 @@ void init()
 {
     control_socket = create_control_sock();
 
-    //router_socket and data_socket will be initialized after INIT from controller
-
     FD_ZERO(&master_list);
     FD_ZERO(&watch_list);
 
-    /* Register the control socket */
     FD_SET(control_socket, &master_list);
     head_fd = control_socket;
 
