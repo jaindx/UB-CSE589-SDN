@@ -111,7 +111,6 @@ void main_loop()
                 else if(sock_index == router_socket)
                 {
                     process_routing_updates (sock_index);
-                    print_g_routing_table();
                 }
 
                 else if(sock_index == data_socket)

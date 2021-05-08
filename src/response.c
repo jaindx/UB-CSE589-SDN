@@ -76,7 +76,6 @@ void init_response (int sock_index,char *cntrl_payload)
 		g_peers[i].port2 = ntohs(ptr->port2);
 		g_peers[i].cost  = ntohs(ptr->cost);
 		g_peers[i].router_ip  = ntohl(ptr->router_ip);
-		print_g_peer (&g_peers[i]);
 	}
 #endif
 #if 1
@@ -99,7 +98,6 @@ void init_response (int sock_index,char *cntrl_payload)
         g_peers[i].port2 = ntohs(port2);
         g_peers[i].cost = ntohs(cost);
         g_peers[i].router_ip = ntohl(router_ip);
-        print_g_peer (&g_peers[i]);
         if (cost == 0)
         {
             my_router_id = ntohs(router_id);
@@ -134,12 +132,6 @@ void init_response (int sock_index,char *cntrl_payload)
     send_control_response (sock_index,1,0);
     init_active_peers();
 
-    return;
-}
-
-void print_g_peer (struct PEER_INFO *ptr)
-{
-    print_ip(ptr->router_ip);
     return;
 }
 
@@ -523,8 +515,6 @@ int connect_to_peer (uint32_t router_ip)
     int ft_fd = socket(AF_INET, SOCK_STREAM, 0);
     int index = find_index_with_ip (router_ip);
     int server_port = g_peers[index].port2;
-
-    print_ip(router_ip);
 
     struct sockaddr_in sin;
     memset(&sin, 0, sizeof(sin));
