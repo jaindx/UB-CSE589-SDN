@@ -22,6 +22,9 @@
  */
 #include "../include/global.h"
 #include "../include/connection_manager.h"
+#include <stdlib.h>
+#include "../include/router_info.h"
+
 /**
  * main function
  *
@@ -33,6 +36,12 @@ int main(int argc, char **argv)
 {
 	/*Start Here*/
     sscanf(argv[1], "%" SCNu16, &CONTROL_PORT);
+    routerID = (uint16_t*)malloc(sizeof(uint16_t)*nRouters);    
+ 	routerPort = (uint16_t*)malloc(sizeof(uint16_t)*nRouters);
+    dataPort = (uint16_t*)malloc(sizeof(uint16_t)*nRouters);
+    cost = (uint16_t*)malloc(sizeof(uint16_t)*nRouters);
+    nextHop = (uint16_t*)malloc(sizeof(uint16_t)*nRouters);
+    destIp = (uint32_t*)malloc(sizeof(uint32_t)*nRouters);
     init();
 	return 0;
 }

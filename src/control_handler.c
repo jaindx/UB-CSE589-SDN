@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include "../include/globals.h"
 #include "../include/control_responses.h"
 #include "../include/router_info.h"
 #include "../include/connection_manager.h"
@@ -110,6 +111,8 @@ bool control_recv_hook(int sock_index)
         free(cntrl_header);
         return FALSE;
     }
+    
+    printf("** Control Header : which it does not read because of strange format %s \n",cntrl_header);
 
 #ifdef PACKET_USING_STRUCT
         BUILD_BUG_ON(sizeof(struct CONTROL_HEADER) != CNTRL_HEADER_SIZE);
@@ -169,18 +172,6 @@ bool control_recv_hook(int sock_index)
         case 5: printf("\nFiles to send\n");
                 sendFile(sock_index,cntrl_payload,payload_len);
                 break;
-
-        case 6:
-            send_control_response (sock_index, 6, 0);
-            break;
-
-        case 7:
-            last_packet (sock_index);
-            break;
-
-        case 8:
-            one_last_packet (sock_index);
-            break;
     }
 
     if(payload_len != 0) free(cntrl_payload);
