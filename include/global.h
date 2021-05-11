@@ -23,5 +23,7 @@ typedef enum {FALSE, TRUE} bool;
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
 uint16_t CONTROL_PORT;
+uint16_t ROUTER_PORT;
+uint16_t DATA_PORT;
 
 #endif //JAINZACH_GLOBAL_H

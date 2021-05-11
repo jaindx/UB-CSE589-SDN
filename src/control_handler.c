@@ -12,6 +12,10 @@
 #include <sys/queue.h>
 #include <unistd.h>
 #include <string.h>
+#include <arpa/inet.h>
+#include "../include/control_responses.h"
+#include "../include/router_info.h"
+#include "../include/connection_manager.h"
 
 #ifndef PACKET_USING_STRUCT
 #define CNTRL_CONTROL_CODE_OFFSET 0x04
@@ -113,6 +117,12 @@ bool control_recv_hook(int sock_index)
         struct CONTROL_HEADER *header = (struct CONTROL_HEADER *) cntrl_header;
         control_code = header->control_code;
         payload_len = ntohs(header->payload_len);
+        uint16_t response_time = header->response_time;
+        char ip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET,(struct in_addr *)&header->dest_ip_addr,ip,INET_ADDRSTRLEN);
+        printf("Fields derived from the control header\n");
+        printf("control code: %d payload_len : %d \n",control_code,payload_len);
+        printf("response time : %d dest_ip : %s \n",response_time,ip);
 #endif
 #ifndef PACKET_USING_STRUCT
     memcpy(&control_code, cntrl_header+CNTRL_CONTROL_CODE_OFFSET, sizeof(control_code));
@@ -129,34 +139,36 @@ bool control_recv_hook(int sock_index)
         if(recvALL(sock_index, cntrl_payload, payload_len) < 0){
             remove_control_conn(sock_index);
             free(cntrl_payload);
+            printf("payload length is zero \n");
             return FALSE;
         }
     }
 
     switch(control_code){
-        case 0: author_response (sock_index);
+        case 0: author_response(sock_index);
             break;
 
-        case 1:
-            init_response (sock_index, cntrl_payload);
-            break;
+        case 1: printf("\nready for init initialization :P \n");
+                init_response(sock_index, cntrl_payload);
+                printf("router has been initialized\n");
+                isRouterInitialized = TRUE;
+                break;
 
-        case 2:
-            routing_table_response (sock_index, cntrl_payload);
-            break;
+        case 2: printf("Routing table\n");
+                routing_table_response(sock_index);
+                break;
+                
+        case 3: printf("Updating router costs\n");
+                router_update(sock_index,cntrl_payload);
+                break; 
 
-        case 3:
-            routing_cost_update (sock_index, cntrl_payload);
-            break;
+        case 4: printf("Crash Router\n");
+                crashRouter(sock_index);
+                break;
 
-        case 4:
-            send_control_response (sock_index, 4, 0);
-            exit(1);
-            break;
-
-        case 5:
-            send_file (sock_index, cntrl_payload, payload_len);
-            break;
+        case 5: printf("\nFiles to send\n");
+                sendFile(sock_index,cntrl_payload,payload_len);
+                break;
 
         case 6:
             send_control_response (sock_index, 6, 0);
